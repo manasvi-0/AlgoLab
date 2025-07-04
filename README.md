@@ -11,10 +11,15 @@ An interactive open-source project to learn and visualize Machine Learning algor
 - Beginner-friendly contribution guide
 
 ## 📂 Tech Stack
-- Python, Scikit-learn
-- Gradio / Streamlit
-- NumPy, Matplotlib
-- Git, GitHub Actions
+- fastapi
+- uvicorn
+- scikit-learn
+- pandas
+- numpy
+- matplotlib
+- seaborn
+- python
+
 
 ## 🤝 How to Contribute
 1. Fork the repo
