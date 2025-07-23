@@ -1,21 +1,49 @@
-# Contributors
-
-### 👨‍🏫 Mentors
-- **Name:** Dr. ABC  
-  **GitHub:** [@abc](https://github.com/abc)  
-  **Role:** ML Expert, Code Reviewer
-
-- **Name:** XYZ  
-  **GitHub:** [@xyz](https://github.com/xyz)  
-  **Role:** UI/UX Mentor, PR Manager
+## 👤 Contributor Roles
 
 ---
 
-### 🧑‍💻 Contributors
-- **Name:** Manasvi Jindal  
-  **GitHub:** [@manasvijindal](https://github.com/manasvijindal)  
-  **Role:** Project Admin, Maintainer
+### 🧾 Contributor 1 – Dataset Handler
 
-- **Name:** Contributor1  
-  **GitHub:** [@user1](https://github.com/user1)  
-  **Role:** Frontend Developer
+**Responsibilities:**
+- Implement CSV upload + validation
+- Identify features & target column
+- Add built-in datasets using `sklearn.datasets`
+- Display basic data insights (e.g., shape, nulls, types)
+
+**Tools:** `pandas`, `sklearn.datasets`, `streamlit.file_uploader`
+
+---
+
+### 🔍 Contributor 2 – Supervised ML Visuals
+
+**Responsibilities:**
+- Implement KNN with neighbor highlighting
+- Decision Tree with visual splits
+- Logistic Regression with sigmoid curve
+- SVM with hyperplane + support vectors
+
+**Tools:** `scikit-learn`, `matplotlib`, `plotly`, `seaborn`
+
+---
+
+### 🧭 Contributor 3 – Unsupervised ML Visuals
+
+**Responsibilities:**
+- K-Means Clustering (color-coded clusters)
+- DBSCAN (density-based clusters)
+- PCA (2D projection)
+- Hierarchical Clustering (dendrogram)
+
+**Tools:** `scikit-learn`, `plotly`, `seaborn`
+
+---
+
+### 🎛️ Contributor 4 – Streamlit UI & Integration
+
+**Responsibilities:**
+- Build a sidebar to toggle "Supervised vs Unsupervised"
+- Add algorithm dropdowns and inputs
+- Integrate modules from other contributors
+- Manage layout, styling, and responsiveness
+
+**Tools:** `Streamlit`, 
