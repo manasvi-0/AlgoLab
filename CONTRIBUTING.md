@@ -25,3 +25,12 @@ pip install -r requirements.txt
 - Improve documentation
 - Fix bugs
 - Improve UI
+
+## 🔧 Project Module Overview
+
+| Module                  | Description                                                 |
+|-------------------------|-------------------------------------------------------------|
+| 📂 Dataset Module       | Upload custom CSV or generate synthetic datasets            |
+| 🧠 Algorithm Engine     | Run supervised/unsupervised ML algorithms                   |
+| 📊 Visualization Layer  | Visualize how algorithms behave and perform                 |    
+| 🖼️ UI Layer (Streamlit) | Interactive user interface to switch modes and explore algorithms |
