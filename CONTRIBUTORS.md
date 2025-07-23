@@ -46,4 +46,14 @@
 - Integrate modules from other contributors
 - Manage layout, styling, and responsiveness
 
-**Tools:** `Streamlit`, 
+**Tools:** `Streamlit`
+
+## ✅ Final Deliverables
+
+| File Name                | Description                                        | Owner           |
+|--------------------------|----------------------------------------------------|-----------------|
+| `data_handler.py`        | Dataset upload, validation, and loading logic      | Contributor 1   |
+| `supervised_module.py`   | Implements supervised ML algorithms with visuals   | Contributor 2   |
+| `unsupervised_module.py` | Implements unsupervised ML algorithms with visuals | Contributor 3   |
+| `app.py`                 | Streamlit UI: layout, toggles, and routing         | Contributor 4   |
+
