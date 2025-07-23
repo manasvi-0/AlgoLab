@@ -57,3 +57,13 @@
 | `unsupervised_module.py` | Implements unsupervised ML algorithms with visuals | Contributor 3   |
 | `app.py`                 | Streamlit UI: layout, toggles, and routing         | Contributor 4   |
 
+
+
+## 🔧 Project Module Overview
+
+| Module                  | Description                                                 |
+|-------------------------|-------------------------------------------------------------|
+| 📂 Dataset Module       | Upload custom CSV or generate synthetic datasets            |
+| 🧠 Algorithm Engine     | Run supervised/unsupervised ML algorithms                   |
+| 📊 Visualization Layer  | Visualize how algorithms behave and perform                 |
+| 🖼️ UI Layer (Streamlit) | Interactive user interface to switch modes and explore algorithms |
