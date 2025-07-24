@@ -16,6 +16,7 @@ An interactive open-source project to learn and visualize Machine Learning algor
 - matplotlib
 - seaborn
 - python
+- Streamlit
 
 
 ## 🤝 How to Contribute
