@@ -10,7 +10,6 @@ An interactive open-source project to learn and visualize Machine Learning algor
 - Beginner-friendly contribution guide
 
 ## 📂 Tech Stack
-- fastapi
 - scikit-learn
 - pandas
 - numpy
