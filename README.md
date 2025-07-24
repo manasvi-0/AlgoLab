@@ -11,7 +11,6 @@ An interactive open-source project to learn and visualize Machine Learning algor
 
 ## 📂 Tech Stack
 - fastapi
-- uvicorn
 - scikit-learn
 - pandas
 - numpy
