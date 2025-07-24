@@ -2,8 +2,7 @@
 
 An interactive open-source project to learn and visualize Machine Learning algorithms.
 
-## 🔗 Live Demo
-[Link to hosted Streamlit/Gradio app]
+
 
 ## 🧩 Features
 - Visual explanation of ML algorithms
