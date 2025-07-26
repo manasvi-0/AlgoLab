@@ -4,4 +4,6 @@ pandas
 numpy
 matplotlib
 seaborn
+scipy
+streamlit
 python-multipart
