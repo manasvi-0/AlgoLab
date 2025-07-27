@@ -1,6 +1,9 @@
 # Importing required library
 import streamlit as st
 
+#import upload_validate() from data validation
+from data_handler.upload_validate import upload_and_validate
+
 # Page config
 st.set_page_config(
     page_title="KNN Visualizer",
@@ -54,8 +57,8 @@ with st.sidebar:
     options = ["Upload Dataset", "Generate Dataset"]
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
-    if selected_option == "Upload Dataset":
-        uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+    if selected_option == "Upload Dataset": #modified for data validation feature
+        df = upload_and_validate()
     elif selected_option == "Generate Dataset":
         no_of_sample = st.slider("No. of Samples", 10, 2000)
         no_of_feature = st.slider("No. of Features", 2, 20)
