@@ -2,8 +2,7 @@
 
 An interactive open-source project to learn and visualize Machine Learning algorithms.
 
-## 🔗 Live Demo
-[Link to hosted Streamlit/Gradio app]
+
 
 ## 🧩 Features
 - Visual explanation of ML algorithms
@@ -11,14 +10,13 @@ An interactive open-source project to learn and visualize Machine Learning algor
 - Beginner-friendly contribution guide
 
 ## 📂 Tech Stack
-- fastapi
-- uvicorn
 - scikit-learn
 - pandas
 - numpy
 - matplotlib
 - seaborn
 - python
+- Streamlit
 
 
 ## 🤝 How to Contribute
