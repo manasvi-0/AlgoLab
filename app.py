@@ -1,7 +1,9 @@
 # Importing required library
 import streamlit as st
+from supervised_algo import knn_visualization
+from supervised_algo import knn_theory
 
-# Page config
+# Page configuration
 st.set_page_config(
     page_title="KNN Visualizer",
     page_icon="🔍",
