@@ -6,3 +6,6 @@ matplotlib
 seaborn
 python-multipart
 streamlit
+plotly
+scipy
+pillow

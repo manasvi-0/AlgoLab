@@ -55,20 +55,20 @@ with st.sidebar:
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
     if selected_option == "Upload Dataset":
-        uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+        uploaded_file = st.file_uploader("Choose a CSV file", type="csv", key="main_uploader")
     elif selected_option == "Generate Dataset":
-        no_of_sample = st.slider("No. of Samples", 10, 2000)
-        no_of_feature = st.slider("No. of Features", 2, 20)
-        noise_level = st.slider("Noise Level", 0.00, 50.00)
+        no_of_sample = st.slider("No. of Samples", 10, 2000, key="main_samples")
+        no_of_feature = st.slider("No. of Features", 2, 20, key="main_features")
+        noise_level = st.slider("Noise Level", 0.00, 50.00, key="main_noise")
         no_of_class = st.text_input("No. of Classes")
-        class_separation = st.slider("Class Separation", 0.50, 2.00)
+        class_separation = st.slider("Class Separation", 0.50, 2.00, key="main_separation")
 
 
         def my_callback():
             st.write("Data Generated!")
 
 
-        st.button("Generate Data", on_click=my_callback)
+        st.button("Generate Data", on_click=my_callback, key="main_generate")
 
 # Footer
 st.markdown("""

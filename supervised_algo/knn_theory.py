@@ -14,20 +14,20 @@ def render():
     current_dir=os.path.dirname(__file__)
     image1_path=os.path.join(current_dir,'..','assets','Initial-Data.png')
     image1=Image.open(image1_path)
-    st.image(image1, caption='Step 1', use_container_width=True)
+    st.image(image1, caption='Step 1', width=600)
     # image 2
     st.subheader('Step 2')
     st.markdown('**Calculate Distances**: Distances from the unknown point to all other points are calculated.')
 
     image2_path = os.path.join(current_dir, '..', 'assets', 'Step2.png')
     image2 = Image.open(image2_path)
-    st.image(image2, caption='Step 2', use_container_width=True)
+    st.image(image2, caption='Step 2', width=600)
     # image 3
     st.subheader('Step 3')
     st.markdown('**Voting**: Based on k=3, the nearest neighbors vote, and the majority class is assigned to the new point.')
     image3_path = os.path.join(current_dir, '..', 'assets','Step3.png')
     image3= Image.open(image3_path)
-    st.image(image3, caption='Step 3', use_container_width=True)
+    st.image(image3, caption='Step 3', width=600)
     '''putting images side-by-side
     col1,col2,col3=st.columns(3)
     with col1:
