@@ -1,6 +1,8 @@
 import streamlit as st
 import os
 from PIL import Image
+from pathlib import Path  
+
 def render():
     st.title("K-Nearest Negihbour(KNN)-Theory")
     st.write(
@@ -10,22 +12,25 @@ def render():
     st.header('Working of KNN')
     st.subheader('Step 1')
     st.markdown('**Initial Data**: A new point (🟨) needs to be classified among existing Class A (❇️) and Class B (🔼).')
-    #image 1
-    current_dir=os.path.dirname(__file__)
-    image1_path=os.path.join(current_dir,'..','assets','Initial-Data.png')
-    image1=Image.open(image1_path)
+
+    PROJECT_ROOT = Path(__file__).parent.parent.parent
+    image1_path = PROJECT_ROOT / 'assets' / 'Initial-Data.png'
+    image1 = Image.open(image1_path)
     st.image(image1, caption='Step 1', use_container_width=True)
+
+
+   
     # image 2
     st.subheader('Step 2')
     st.markdown('**Calculate Distances**: Distances from the unknown point to all other points are calculated.')
-
-    image2_path = os.path.join(current_dir, '..', 'assets', 'Step2.png')
+    image2_path = PROJECT_ROOT / 'assets' / 'Step2.png'
     image2 = Image.open(image2_path)
     st.image(image2, caption='Step 2', use_container_width=True)
+
     # image 3
     st.subheader('Step 3')
     st.markdown('**Voting**: Based on k=3, the nearest neighbors vote, and the majority class is assigned to the new point.')
-    image3_path = os.path.join(current_dir, '..', 'assets','Step3.png')
+    image3_path = PROJECT_ROOT / 'assets' / 'Step3.png'
     image3= Image.open(image3_path)
     st.image(image3, caption='Step 3', use_container_width=True)
     '''putting images side-by-side
@@ -34,8 +39,8 @@ def render():
         
     with col2:
        
-    with col3:
-        '''
+    # with col3:
+    #     '''
     st.header('What is K in KNN')
     st.write('In the k-Nearest Neighbours algorithm k is just a number that tells the algorithm how many nearby points or neighbors to look at when it makes a decision.')
     st.write('**Example**: Imagine you are deciding which fruit it is based on its shape and size. You compare it to fruits you already know.')
