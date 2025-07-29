@@ -56,7 +56,11 @@ with tab2:
 
 #Unsupervised Learning
 with tab3:
-    st.write("Unsupervised")
+    from unsupervised_module import unsupervised
+    # Store uploaded data in session state for unsupervised algorithms
+    if 'df' in locals() and df is not None:
+        st.session_state.uploaded_data = df
+    unsupervised()
 
 
 # Sidebar : Data Uploading and Data Generation
