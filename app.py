@@ -3,6 +3,9 @@ import streamlit as st
 import pandas as  pd
 
 
+#import upload_validate() from data validation
+from data_handler.upload_validate import upload_and_validate
+
 # Page config
 st.set_page_config(
     page_title="Algo Lab",
@@ -61,12 +64,17 @@ with st.sidebar:
     options = ["Upload Dataset", "Generate Dataset"]
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
+
     if selected_option == "Upload Dataset":
          file = st.file_uploader("Choose a CSV file", type="csv")
          from  data_handler.upload_validate import upload_file
          with tab1:
              upload_file(file)
 
+
+
+    if selected_option == "Upload Dataset": #modified for data validation feature
+        df = upload_and_validate()
 
     elif selected_option == "Generate Dataset":
         no_of_sample = st.slider("No. of Samples", 10, 2000)
