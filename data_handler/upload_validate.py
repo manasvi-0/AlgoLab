@@ -1,3 +1,14 @@
+
+import  pandas  as pd
+import streamlit as st
+
+
+def upload_file(file):  
+     if file  is not None:
+            if file.name.endswith('.csv'):
+                df=pd.read_csv(file)
+                st.dataframe(df.head())
+
 import streamlit as st
 import pandas as pd
 
@@ -37,3 +48,4 @@ def upload_and_validate():
     else:
         st.info("Please upload a CSV file.")
         return None
+
