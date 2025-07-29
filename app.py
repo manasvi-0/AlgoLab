@@ -1,9 +1,9 @@
-# Importing required library
 import streamlit as st
-import pandas as  pd
+import pandas as pd
+from unsupervised_algos.kmeans_clustering import run_kmeans
+from unsupervised_algos.dbscan_clustering import run_dbscan
 
-
-#import upload_validate() from data validation
+# import upload_validate() from data validation
 from data_handler.upload_validate import upload_and_validate
 
 # Page config
@@ -14,8 +14,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# title  of the  page
-st.title("🔬Algo Labs Visualize and Learn")
+# title of the page
+st.title("🔬 Algo Labs Visualize and Learn")
 
 # Quote box
 st.markdown(f"""
@@ -34,46 +34,63 @@ st.markdown(f"""
 tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
 
 with tab1:
-    st.write("Veiw Dataframe")
+    st.write("View Dataframe")
 
-#Supervised  Learning
+# Supervised Learning
 with tab2:
-    st.write("Supervised  Learning")
-    options = ["KNN", "Decision Tree", "Logestic Regression","SVM"]
+    st.write("Supervised Learning")
+    options = ["KNN", "Decision Tree", "Logestic Regression", "SVM"]
     selected_option = st.selectbox("Choose an option:", options)
 
-    st.write("You have  selected:", selected_option)
+    st.write("You have selected:", selected_option)
 
-    # KNN Option selection
-    if selected_option=="KNN":
-     view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
-     if view == "KNN Overview":
-        from supervised_algo.KNN import knn_theory
-        knn_theory.render()
-     elif view == "KNN Playground":
-         from supervised_algo.KNN import knn_visualization
-         knn_visualization.render()
+    if selected_option == "KNN":
+        view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
+        if view == "KNN Overview":
+            from supervised_algo.KNN import knn_theory
+            knn_theory.render()
+        elif view == "KNN Playground":
+            from supervised_algo.KNN import knn_visualization
+            knn_visualization.render()
 
-#Unsupervised Learning
+# Unsupervised Learning
 with tab3:
-    st.write("Unsupervised")
+    st.write("### Unsupervised Learning")
 
+    # File upload for clustering
+    uploaded_file = st.file_uploader("Upload your CSV file for clustering", type=["csv"])
+    if uploaded_file:
+        data = pd.read_csv(uploaded_file)
+        st.write("### Data Preview", data.head())
+
+        if 'selected_algo' not in st.session_state:
+            st.session_state.selected_algo = "KMeans"
+
+        # Algorithm dropdown
+        st.session_state.selected_algo = st.selectbox(
+            "Choose Clustering Algorithm",
+            ["KMeans", "DBSCAN"],
+            index=["KMeans", "DBSCAN"].index(st.session_state.selected_algo)
+        )
+
+        # Algo caller
+        if st.session_state.selected_algo == "KMeans":
+            run_kmeans(data)
+        elif st.session_state.selected_algo == "DBSCAN":
+            run_dbscan(data)
 
 # Sidebar : Data Uploading and Data Generation
 with st.sidebar:
     options = ["Upload Dataset", "Generate Dataset"]
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
-
     if selected_option == "Upload Dataset":
-         file = st.file_uploader("Choose a CSV file", type="csv")
-         from  data_handler.upload_validate import upload_file
-         with tab1:
-             upload_file(file)
+        file = st.file_uploader("Choose a CSV file", type="csv")
+        from data_handler.upload_validate import upload_file
+        with tab1:
+            upload_file(file)
 
-
-
-    if selected_option == "Upload Dataset": #modified for data validation feature
+    if selected_option == "Upload Dataset":  # modified for data validation feature
         df = upload_and_validate()
 
     elif selected_option == "Generate Dataset":
@@ -83,10 +100,8 @@ with st.sidebar:
         no_of_class = st.text_input("No. of Classes")
         class_separation = st.slider("Class Separation", 0.50, 2.00)
 
-
         def my_callback():
             st.write("Data Generated!")
-
 
         st.button("Generate Data", on_click=my_callback)
 
@@ -110,4 +125,3 @@ st.markdown("""
     <p>© 2025 GGSOC❤️ </p>
 </div>
 """, unsafe_allow_html=True)
-
