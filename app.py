@@ -1,12 +1,15 @@
 # Importing required library
 import streamlit as st
-from supervised_algo import knn_visualization
-from supervised_algo import knn_theory
+import pandas as  pd
+
+#import upload_validate() from data validation
+from data_handler.upload_validate import upload_and_validate
+
 
 # Page configuration
 st.set_page_config(
-    page_title="KNN Visualizer",
-    page_icon="🔍",
+    page_title="Algo Lab",
+    page_icon="🔬",
     layout="centered",
     initial_sidebar_state="expanded"
 )
@@ -28,36 +31,51 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Navigation Tabs
-tab1, tab2, tab3 = st.tabs(["Visualize Data", "Supervised Learning", "Unsupervised Learning"])
+tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
 
 with tab1:
-    from algo_files.data_visualize import visualize
+    st.write("Veiw Dataframe")
 
-    visualize()
-
+#Supervised  Learning
 with tab2:
-    view = st.sidebar.radio("Choose View", ["KNN Overview", "KNN Playground"])
-    if view == "KNN Overview":
-        from supervised_algo import knn_theory
+    st.write("Supervised  Learning")
+    options = ["KNN", "Decision Tree", "Logestic Regression","SVM"]
+    selected_option = st.selectbox("Choose an option:", options)
 
-        knn_theory.render()
-    elif view == "KNN Playground":
-        from supervised_algo import knn_visualization
+    st.write("You have  selected:", selected_option)
 
-        knn_visualization.render()
+    # KNN Option selection
+    #if selected_option=="KNN":
+     #view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
+     #if view == "KNN Overview":
+        #from supervised_algo.KNN import knn_theory
+        #knn_theory.render()
+     #elif view == "KNN Playground":
+         #from supervised_algo.KNN import knn_visualization
+         #knn_visualization.render()
 
+#Unsupervised Learning
 with tab3:
-    from algo_files.unsupervised_learning import unsupervised
+    st.write("Unsupervised")
 
-    unsupervised()
 
 # Sidebar : Data Uploading and Data Generation
 with st.sidebar:
     options = ["Upload Dataset", "Generate Dataset"]
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
+
     if selected_option == "Upload Dataset":
-        uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+         file = st.file_uploader("Choose a CSV file", type="csv")
+         from  data_handler.upload_validate import upload_file
+         with tab1:
+             upload_file(file)
+
+
+
+    if selected_option == "Upload Dataset": #modified for data validation feature
+        df = upload_and_validate()
+
     elif selected_option == "Generate Dataset":
         no_of_sample = st.slider("No. of Samples", 10, 2000)
         no_of_feature = st.slider("No. of Features", 2, 20)
