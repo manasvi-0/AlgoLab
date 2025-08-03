@@ -1,3 +1,10 @@
+
+# Importing required library
+import streamlit as st
+import pandas as  pd
+
+#import upload_validate() from data validation
+
 # ==============================
 #  app.py - AlgoLab Main Script
 #  ----------------------------
@@ -9,10 +16,16 @@
 import streamlit as st
 import pandas as pd
 from supervised_module import interactive_model_tuning
+
 from data_handler.upload_validate import upload_and_validate
 from sklearn.datasets import make_classification
 
+
+
+# Page configuration
+=======
 # ✅ Page configuration
+
 st.set_page_config(
     page_title="Algo Lab",
     page_icon="🔬",
@@ -49,14 +62,14 @@ with tab2:
     st.write("You have  selected:", selected_option)
 
     # KNN Option selection
-    if selected_option=="KNN":
-     view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
-     if view == "KNN Overview":
-        from supervised_algo.KNN import knn_theory
-        knn_theory.render()
-     elif view == "KNN Playground":
-         from supervised_algo.KNN import knn_visualization
-         knn_visualization.render()
+    #if selected_option=="KNN":
+     #view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
+     #if view == "KNN Overview":
+        #from supervised_algo.KNN import knn_theory
+        #knn_theory.render()
+     #elif view == "KNN Playground":
+         #from supervised_algo.KNN import knn_visualization
+         #knn_visualization.render()
 
 #Unsupervised Learning
 with tab3:
