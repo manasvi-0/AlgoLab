@@ -36,6 +36,36 @@ st.markdown("""
 # ✅ Tabs for navigation
 tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
 
+
+with tab1:
+    st.write("Veiw Dataframe")
+
+#Supervised  Learning
+with tab2:
+    st.write("Supervised  Learning")
+    options = ["KNN", "Decision Tree", "Logestic Regression","SVM"]
+    selected_option = st.selectbox("Choose an option:", options)
+
+    st.write("You have  selected:", selected_option)
+
+    # KNN Option selection
+    if selected_option=="KNN":
+     view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
+     if view == "KNN Overview":
+        from supervised_algo.KNN import knn_theory
+        knn_theory.render()
+     elif view == "KNN Playground":
+         from supervised_algo.KNN import knn_visualization
+         knn_visualization.render()
+
+#Unsupervised Learning
+with tab3:
+    from unsupervised_module import unsupervised
+    # Store uploaded data in session state for unsupervised algorithms
+    if 'df' in locals() and df is not None:
+        st.session_state.uploaded_data = df
+    unsupervised()
+
 # ✅ Global variable to store dataset
 df = None
 
