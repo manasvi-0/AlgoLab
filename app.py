@@ -73,7 +73,7 @@ with tab2:
 
 #Unsupervised Learning
 with tab3:
-    from unsupervised_module import unsupervised
+    from unsupervised_algorithms.unsupervised_module import unsupervised
     # Store uploaded data in session state for unsupervised algorithms
     if 'df' in locals() and df is not None:
         st.session_state.uploaded_data = df

@@ -3,10 +3,11 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
-from sklearn.decomposition import PCA
-from sklearn.datasets import make_blobs
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering, SpectralClustering
+from sklearn.decomposition import PCA, TSNE
+from sklearn.datasets import make_blobs, make_circles
 from sklearn.preprocessing import StandardScaler
+from sklearn.mixture import GaussianMixture
 from scipy.cluster.hierarchy import dendrogram, linkage
 import warnings
 warnings.filterwarnings('ignore')
@@ -14,7 +15,7 @@ warnings.filterwarnings('ignore')
 def unsupervised():
     st.write("Unsupervised Learning")
     
-    options = ["K-Means", "DBSCAN", "PCA", "Hierarchical Clustering"]
+    options = ["K-Means", "DBSCAN", "PCA", "Hierarchical Clustering", "Gaussian Mixture", "Spectral Clustering", "t-SNE"]
     selected_option = st.selectbox("Choose an algorithm:", options)
     
     st.write("You have selected:", selected_option)
@@ -58,6 +59,36 @@ def unsupervised():
             st.write("- **Key parameters:** Number of clusters, linkage method")
         elif view == "Hierarchical Playground":
             hierarchical_playground()
+    
+    elif selected_option == "Gaussian Mixture":
+        view = st.radio("Choose View", ["GMM Overview", "GMM Playground"])
+        if view == "GMM Overview":
+            st.subheader("Gaussian Mixture Model Overview")
+            st.write("**GMM** assumes data comes from a mixture of Gaussian distributions.")
+            st.write("- **Use case:** Soft clustering, density estimation")
+            st.write("- **Key parameter:** Number of components")
+        elif view == "GMM Playground":
+            gmm_playground()
+    
+    elif selected_option == "Spectral Clustering":
+        view = st.radio("Choose View", ["Spectral Overview", "Spectral Playground"])
+        if view == "Spectral Overview":
+            st.subheader("Spectral Clustering Overview")
+            st.write("**Spectral Clustering** uses eigenvalues of similarity matrix.")
+            st.write("- **Use case:** Non-convex clusters, image segmentation")
+            st.write("- **Key parameter:** Number of clusters")
+        elif view == "Spectral Playground":
+            spectral_playground()
+    
+    elif selected_option == "t-SNE":
+        view = st.radio("Choose View", ["t-SNE Overview", "t-SNE Playground"])
+        if view == "t-SNE Overview":
+            st.subheader("t-SNE Overview")
+            st.write("**t-SNE** reduces dimensionality while preserving local structure.")
+            st.write("- **Use case:** Data visualization, exploratory analysis")
+            st.write("- **Key parameter:** Perplexity")
+        elif view == "t-SNE Playground":
+            tsne_playground()
 
 def kmeans_playground():
     st.subheader("K-Means Clustering Playground")
@@ -232,6 +263,106 @@ def hierarchical_playground():
             
             st.pyplot(fig)
             st.write(f"**Clusters:** {n_clusters}")
+
+def gmm_playground():
+    st.subheader("Gaussian Mixture Model Playground")
+    
+    X = None
+    if 'uploaded_data' in st.session_state and st.session_state.uploaded_data is not None:
+        df = st.session_state.uploaded_data
+        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        if len(numeric_cols) >= 2:
+            X = df[numeric_cols[:2]].values
+            st.info(f"Using uploaded data: {X.shape[0]} samples, 2 features")
+    
+    if st.button("Generate Sample Data", key="gmm_data"):
+        X, _ = make_blobs(n_samples=300, centers=3, cluster_std=1.0, random_state=0)
+        st.session_state.gmm_data = X
+        st.success("Sample data generated!")
+    
+    if 'gmm_data' in st.session_state and X is None:
+        X = st.session_state.gmm_data
+    
+    if X is not None:
+        n_components = st.slider("Number of Components", 2, 6, 3)
+        
+        if st.button("Run GMM"):
+            gmm = GaussianMixture(n_components=n_components, random_state=42)
+            labels = gmm.fit_predict(X)
+            
+            fig, ax = plt.subplots(figsize=(10, 6))
+            scatter = ax.scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis', alpha=0.7)
+            ax.set_title(f'Gaussian Mixture Model (components={n_components})')
+            plt.colorbar(scatter)
+            st.pyplot(fig)
+            st.write(f"**AIC:** {gmm.aic(X):.2f}")
+            st.write(f"**BIC:** {gmm.bic(X):.2f}")
+
+def spectral_playground():
+    st.subheader("Spectral Clustering Playground")
+    
+    X = None
+    if 'uploaded_data' in st.session_state and st.session_state.uploaded_data is not None:
+        df = st.session_state.uploaded_data
+        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        if len(numeric_cols) >= 2:
+            X = df[numeric_cols[:2]].values
+            st.info(f"Using uploaded data: {X.shape[0]} samples, 2 features")
+    
+    if st.button("Generate Sample Data", key="spectral_data"):
+        X, _ = make_circles(n_samples=300, noise=0.1, factor=0.3, random_state=0)
+        st.session_state.spectral_data = X
+        st.success("Circular data generated!")
+    
+    if 'spectral_data' in st.session_state and X is None:
+        X = st.session_state.spectral_data
+    
+    if X is not None:
+        n_clusters = st.slider("Number of Clusters", 2, 6, 2)
+        
+        if st.button("Run Spectral Clustering"):
+            spectral = SpectralClustering(n_clusters=n_clusters, random_state=42)
+            labels = spectral.fit_predict(X)
+            
+            fig, ax = plt.subplots(figsize=(10, 6))
+            scatter = ax.scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis', alpha=0.7)
+            ax.set_title(f'Spectral Clustering (clusters={n_clusters})')
+            plt.colorbar(scatter)
+            st.pyplot(fig)
+
+def tsne_playground():
+    st.subheader("t-SNE Playground")
+    
+    X = None
+    if 'uploaded_data' in st.session_state and st.session_state.uploaded_data is not None:
+        df = st.session_state.uploaded_data
+        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        if len(numeric_cols) >= 3:
+            X = df[numeric_cols].values
+            st.info(f"Using uploaded data: {X.shape[0]} samples, {X.shape[1]} features")
+    
+    if st.button("Generate Sample Data", key="tsne_data"):
+        X, _ = make_blobs(n_samples=300, centers=4, n_features=10, random_state=0)
+        st.session_state.tsne_data = X
+        st.success("10D sample data generated!")
+    
+    if 'tsne_data' in st.session_state and X is None:
+        X = st.session_state.tsne_data
+    
+    if X is not None:
+        perplexity = st.slider("Perplexity", 5, 50, 30)
+        
+        if st.button("Run t-SNE"):
+            with st.spinner("Running t-SNE (this may take a moment)..."):
+                tsne = TSNE(n_components=2, perplexity=perplexity, random_state=42)
+                X_tsne = tsne.fit_transform(X)
+            
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.scatter(X_tsne[:, 0], X_tsne[:, 1], alpha=0.7)
+            ax.set_title(f't-SNE Visualization (perplexity={perplexity})')
+            ax.set_xlabel('t-SNE 1')
+            ax.set_ylabel('t-SNE 2')
+            st.pyplot(fig)
 
 if __name__ == "__main__":
     st.set_page_config(page_title="Unsupervised Learning", page_icon="🧭")
