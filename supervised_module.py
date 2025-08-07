@@ -100,8 +100,9 @@ def interactive_model_tuning(df):
 
     # 🔹 KNN
     if "KNN" in algorithms:
-        k = st.slider("KNN - Number of Neighbors", 1, 20, 5)
-        models["KNN"] = KNeighborsClassifier(n_neighbors=k)
+        from supervised_algos import knn_visualization
+        knn_visualization.render(df)
+        return
 
     # 🔹 Decision Tree
     if "Decision Tree" in algorithms:
