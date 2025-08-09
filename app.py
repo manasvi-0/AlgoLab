@@ -1,30 +1,10 @@
-
-# Importing required library
-import streamlit as st
-import pandas as  pd
-
-#import upload_validate() from data validation
-
-# ==============================
-#  app.py - AlgoLab Main Script
-#  ----------------------------
-#  - Handles UI and navigation
-#  - Dataset Upload & Generation
-#  - Calls interactive_model_tuning()
-# ==============================
-
 import streamlit as st
 import pandas as pd
-from supervised_module import interactive_model_tuning
-
+from unsupervised_algos.kmeans_clustering import run_kmeans
+from unsupervised_algos.dbscan_clustering import run_dbscan
 from data_handler.upload_validate import upload_and_validate
 from sklearn.datasets import make_classification
-
-
-
-# Page configuration
-=======
-# ✅ Page configuration
+from supervised_module import interactive_model_tuning
 
 st.set_page_config(
     page_title="Algo Lab",
@@ -33,10 +13,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ✅ App Title
 st.title("🔬 Algo Labs - Visualize and Learn")
 
-# ✅ Motivational Quote Box
 st.markdown("""
 <div style='padding: 12px; border-left: 5px solid black;
             background-color: rgba(74, 144, 226, 0.1);
@@ -46,55 +24,18 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ✅ Tabs for navigation
 tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
 
-
-with tab1:
-    st.write("Veiw Dataframe")
-
-#Supervised  Learning
-with tab2:
-    st.write("Supervised  Learning")
-    options = ["KNN", "Decision Tree", "Logestic Regression","SVM"]
-    selected_option = st.selectbox("Choose an option:", options)
-
-    st.write("You have  selected:", selected_option)
-
-    # KNN Option selection
-    #if selected_option=="KNN":
-     #view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
-     #if view == "KNN Overview":
-        #from supervised_algo.KNN import knn_theory
-        #knn_theory.render()
-     #elif view == "KNN Playground":
-         #from supervised_algo.KNN import knn_visualization
-         #knn_visualization.render()
-
-#Unsupervised Learning
-with tab3:
-    from unsupervised_algorithms.unsupervised_module import unsupervised
-    # Store uploaded data in session state for unsupervised algorithms
-    if 'df' in locals() and df is not None:
-        st.session_state.uploaded_data = df
-    unsupervised()
-
-# ✅ Global variable to store dataset
 df = None
 
-# ==============================
-# 📂 Sidebar - Upload or Generate Dataset
-# ==============================
 with st.sidebar:
     st.header("📂 Dataset Options")
     options = ["Upload Dataset", "Generate Dataset"]
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
-    # ✅ Upload dataset with validation
     if selected_option == "Upload Dataset":
         df = upload_and_validate()
 
-    # ✅ Generate synthetic dataset
     elif selected_option == "Generate Dataset":
         no_of_sample = st.slider("No. of Samples", 10, 2000, 100)
         no_of_feature = st.slider("No. of Features", 2, 20, 2)
@@ -117,9 +58,6 @@ with st.sidebar:
             st.success("✅ Dataset Generated Successfully!")
             st.dataframe(df.head())
 
-# ==============================
-# 🏠 Tab 1: Home Page
-# ==============================
 with tab1:
     st.write("Welcome to AlgoLab! 👋")
     if df is not None:
@@ -128,9 +66,6 @@ with tab1:
     else:
         st.info("Upload or generate a dataset to preview here.")
 
-# ==============================
-# 🤖 Tab 2: Supervised Learning
-# ==============================
 with tab2:
     st.write("### Supervised Learning Playground")
     if df is not None:
@@ -138,13 +73,29 @@ with tab2:
     else:
         st.info("Upload or generate a dataset first to start tuning models.")
 
-# ==============================
-# 🚧 Tab 3: Unsupervised Learning
-# ==============================
 with tab3:
-    st.write("Unsupervised module is under development.")
+    st.write("### Unsupervised Learning")
 
-# Footer
+    if df is not None:
+        st.write("### Data Preview", df.head())
+
+        if 'selected_algo' not in st.session_state:
+            st.session_state.selected_algo = "KMeans"
+
+        st.session_state.selected_algo = st.selectbox(
+            "Choose Clustering Algorithm",
+            ["KMeans", "DBSCAN"],
+            index=["KMeans", "DBSCAN"].index(st.session_state.selected_algo)
+        )
+
+        if st.session_state.selected_algo == "KMeans":
+            run_kmeans(df)
+        elif st.session_state.selected_algo == "DBSCAN":
+            run_dbscan(df)
+    else:
+        st.info("Please upload or generate a dataset from the sidebar to use Unsupervised Learning algorithms.")
+
+
 st.markdown("""
 <style>
 .footer {
