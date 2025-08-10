@@ -1,11 +1,11 @@
 """
-Supervised Learning Module with Real-time Visualizations
-=======================================================
+Supervised Learning Module for AlgoLab
+=====================================
 
-This module implements commonly used supervised machine learning algorithms
-with both static and real-time visualizations for better understanding.
+This module provides comprehensive supervised learning functionality for the AlgoLab application.
+It includes preprocessing, model training, evaluation, and visualization capabilities.
 
-Algorithms included:
+Algorithms supported:
 - Linear Regression
 - Logistic Regression  
 - Decision Tree
@@ -13,12 +13,17 @@ Algorithms included:
 - K-Nearest Neighbors (KNN)
 
 Features:
-- Static visualizations (train-test split, decision boundaries, etc.)
-- Real-time step-by-step training visualizations
-- Modular and reusable code structure
+- Data preprocessing (handling nulls, outliers, categorical encoding)
+- Interactive hyperparameter tuning
+- Multi-algorithm performance comparison
+- Decision boundary visualization (2D datasets)
+- Real-time training visualizations
+- Streamlit integration
 """
 
+import streamlit as st
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
@@ -27,27 +32,91 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.svm import SVC, SVR
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.metrics import (
-    mean_squared_error, r2_score, accuracy_score, 
+    mean_squared_error, r2_score, accuracy_score, precision_score, recall_score, f1_score,
     classification_report, confusion_matrix, roc_curve, auc
 )
-from sklearn.preprocessing import StandardScaler
-import matplotlib.animation as animation
-try:
-    from IPython.display import display, clear_output
-    IPYTHON_AVAILABLE = True
-except ImportError:
-    IPYTHON_AVAILABLE = False
-    def display(*args, **kwargs):
-        pass
-    def clear_output(wait=False):
-        pass
-import time
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 import warnings
 warnings.filterwarnings('ignore')
 
 # Set style for better visualizations
-plt.style.use('seaborn-v0_8')
+plt.style.use('default')
 sns.set_palette("husl")
+
+# Data Preprocessing Functions
+def preprocess_data(df: pd.DataFrame):
+    """
+    Preprocess the dataset by handling nulls, outliers, and categorical encoding.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        Input dataframe to preprocess
+        
+    Returns:
+    --------
+    pd.DataFrame
+        Preprocessed dataframe
+    """
+    df = df.copy()
+
+    # Handle nulls
+    for col in df.columns:
+        if df[col].dtype in ['float64', 'int64']:
+            df[col].fillna(df[col].mean(), inplace=True)
+        else:
+            df[col].fillna(df[col].mode()[0], inplace=True)
+
+    # Encode categorical features
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            encoder = LabelEncoder()
+            df[col] = encoder.fit_transform(df[col])
+
+    # Outlier treatment (IQR method)
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    for col in numeric_cols:
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        df[col] = np.where(df[col] < lower_bound, lower_bound, df[col])
+        df[col] = np.where(df[col] > upper_bound, upper_bound, df[col])
+
+    return df
+
+# Decision Boundary Visualization
+def plot_decision_boundary(model, X, y, ax, title):
+    """
+    Plots decision boundaries for 2D datasets.
+    
+    Parameters:
+    -----------
+    model : sklearn estimator
+        Trained model
+    X : array-like
+        Feature matrix
+    y : array-like
+        Target variable
+    ax : matplotlib axis
+        Axis to plot on
+    title : str
+        Plot title
+    """
+    h = 0.02  # step size
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+
+    ax.contourf(xx, yy, Z, alpha=0.3, cmap=plt.cm.coolwarm)
+    scatter = ax.scatter(X[:, 0], X[:, 1], c=y, edgecolors='k', cmap=plt.cm.coolwarm)
+    ax.set_title(title)
+    return scatter
 
 class SupervisedLearningModule:
     """
@@ -98,10 +167,144 @@ class SupervisedLearningModule:
         print(f"Dataset prepared:")
         print(f"Training set: {self.X_train.shape}")
         print(f"Test set: {self.X_test.shape}")
+
+# Main function for Streamlit integration
+def interactive_model_tuning(df):
+    """
+    Main function for supervised learning playground in Streamlit.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        Input dataframe with features and target
+    """
+    if df is None:
+        st.warning("Please upload or generate a dataset first.")
+        return
+
+    st.subheader("🔧 Preprocessing & Train-Test Split")
+    df = preprocess_data(df)
+    X = df.iloc[:, :-1].values
+    y = df.iloc[:, -1].values
+
+    # Scale features
+    scaler = StandardScaler()
+    X = scaler.fit_transform(X)
+
+    test_size = st.slider("Test Size (%)", 10, 50, 30)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size/100, random_state=42
+    )
+
+    st.subheader("🤖 Select Algorithms to Compare")
+    algorithms = st.multiselect(
+        "Choose models:", 
+        ["KNN", "Decision Tree", "Logistic Regression", "SVM"]
+    )
+
+    models = {}
+    scores = []
+
+    # 🔹 KNN
+    if "KNN" in algorithms:
+        k = st.slider("KNN - Number of Neighbors", 1, 20, 5)
+        models["KNN"] = KNeighborsClassifier(n_neighbors=k)
+
+    # 🔹 Decision Tree
+    if "Decision Tree" in algorithms:
+        max_depth = st.slider("Decision Tree - Max Depth", 1, 20, 5)
+        min_samples_split = st.slider("Decision Tree - Min Samples Split", 2, 10, 2)
+        models["Decision Tree"] = DecisionTreeClassifier(max_depth=max_depth, 
+                                                         min_samples_split=min_samples_split)
+
+    # 🔹 Logistic Regression
+    if "Logistic Regression" in algorithms:
+        C = st.slider("Logistic Regression - Regularization Strength (C)", 0.01, 10.0, 1.0)
+        models["Logistic Regression"] = LogisticRegression(C=C, max_iter=1000)
+
+    # 🔹 SVM
+    if "SVM" in algorithms:
+        kernel = st.selectbox("SVM - Kernel", ["linear", "poly", "rbf", "sigmoid"])
+        C = st.slider("SVM - Regularization Parameter (C)", 0.01, 10.0, 1.0)
+        models["SVM"] = SVC(kernel=kernel, C=C)
         
-        # Visualize train-test split
-        self._visualize_train_test_split()
+    # Training and Evaluation
+    if st.button("🚀 Train Models"):
+        with st.spinner("Training models..."):
+            for name, model in models.items():
+                model.fit(X_train, y_train)
+                y_pred = model.predict(X_test)
+                scores.append({
+                    "Algorithm": name,
+                    "Accuracy": accuracy_score(y_test, y_pred),
+                    "Precision": precision_score(y_test, y_pred, average='weighted'),
+                    "Recall": recall_score(y_test, y_pred, average='weighted'),
+                    "F1-Score": f1_score(y_test, y_pred, average='weighted')
+                })
+
+        if scores:
+            st.subheader("📊 Performance Comparison")
+            score_df = pd.DataFrame(scores)
+            st.dataframe(score_df)
+
+            # Bar plot
+            st.subheader("📈 Metrics Visualization")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            melted_df = score_df.melt(id_vars=["Algorithm"], 
+                                      value_vars=["Accuracy", "Precision", "Recall", "F1-Score"],
+                                      var_name="Metric", value_name="Score")
+            sns.barplot(data=melted_df, x="Algorithm", y="Score", hue="Metric", ax=ax)
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+            st.pyplot(fig)
+
+            # Decision boundary visualization for 2D datasets
+            if X.shape[1] == 2:
+                st.subheader("🎯 Decision Boundary Visualization")
+                fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+                axes = axes.ravel()
+                
+                for i, (name, model) in enumerate(models.items()):
+                    if i < 4:  # Limit to 4 plots
+                        plot_decision_boundary(model, X_train, y_train, axes[i], f"{name} Boundary")
+                
+                plt.tight_layout()
+                st.pyplot(fig)
+            else:
+                st.info("Decision boundary visualization is only available for 2D datasets.")
+
+# Additional utility functions for advanced features
+def train_single_model(model, X_train, y_train, X_test, y_test, model_name):
+    """
+    Train a single model and return performance metrics.
+    
+    Parameters:
+    -----------
+    model : sklearn estimator
+        Model to train
+    X_train, y_train : array-like
+        Training data
+    X_test, y_test : array-like
+        Test data
+    model_name : str
+        Name of the model
         
+    Returns:
+    --------
+    dict
+        Performance metrics
+    """
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    
+    return {
+        "Algorithm": model_name,
+        "Accuracy": accuracy_score(y_test, y_pred),
+        "Precision": precision_score(y_test, y_pred, average='weighted'),
+        "Recall": recall_score(y_test, y_pred, average='weighted'),
+        "F1-Score": f1_score(y_test, y_pred, average='weighted')
+    }
+
     def _visualize_train_test_split(self):
         """Visualize the train-test split of the data."""
         fig, axes = plt.subplots(1, 2, figsize=(15, 6))

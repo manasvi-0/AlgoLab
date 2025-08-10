@@ -4,7 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering, SpectralClustering
-from sklearn.decomposition import PCA, TSNE
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 from sklearn.datasets import make_blobs, make_circles
 from sklearn.preprocessing import StandardScaler
 from sklearn.mixture import GaussianMixture
@@ -102,7 +103,7 @@ def kmeans_playground():
             X = df[numeric_cols[:2]].values
             st.info(f"Using uploaded data: {X.shape[0]} samples, 2 features")
     
-    if st.button("Generate Sample Data", key="kmeans_data"):
+    if st.button("Generate Sample Data", key="kmeans_data_btn"):
         X, _ = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
         st.session_state.kmeans_data = X
         st.success("Sample data generated!")
@@ -139,7 +140,7 @@ def dbscan_playground():
             X = df[numeric_cols[:2]].values
             st.info(f"Using uploaded data: {X.shape[0]} samples, 2 features")
     
-    if st.button("Generate Sample Data", key="dbscan_data"):
+    if st.button("Generate Sample Data", key="dbscan_data_btn"):
         X, _ = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
         st.session_state.dbscan_data = X
         st.success("Sample data generated!")
@@ -188,7 +189,7 @@ def pca_playground():
             X = df[numeric_cols].values
             st.info(f"Using uploaded data: {X.shape[0]} samples, {X.shape[1]} features")
     
-    if st.button("Generate Sample Data", key="pca_data"):
+    if st.button("Generate Sample Data", key="pca_data_btn"):
         X, _ = make_blobs(n_samples=300, centers=4, n_features=4, random_state=0)
         st.session_state.pca_data = X
         st.success("4D sample data generated!")
@@ -234,7 +235,7 @@ def hierarchical_playground():
             X = df[numeric_cols[:2]].values
             st.info(f"Using uploaded data: {X.shape[0]} samples, 2 features")
     
-    if st.button("Generate Sample Data", key="hier_data"):
+    if st.button("Generate Sample Data", key="hier_data_btn"):
         X, _ = make_blobs(n_samples=100, centers=4, cluster_std=0.60, random_state=0)
         st.session_state.hier_data = X
         st.success("Sample data generated!")
@@ -275,7 +276,7 @@ def gmm_playground():
             X = df[numeric_cols[:2]].values
             st.info(f"Using uploaded data: {X.shape[0]} samples, 2 features")
     
-    if st.button("Generate Sample Data", key="gmm_data"):
+    if st.button("Generate Sample Data", key="gmm_data_btn"):
         X, _ = make_blobs(n_samples=300, centers=3, cluster_std=1.0, random_state=0)
         st.session_state.gmm_data = X
         st.success("Sample data generated!")
@@ -309,7 +310,7 @@ def spectral_playground():
             X = df[numeric_cols[:2]].values
             st.info(f"Using uploaded data: {X.shape[0]} samples, 2 features")
     
-    if st.button("Generate Sample Data", key="spectral_data"):
+    if st.button("Generate Sample Data", key="spectral_data_btn"):
         X, _ = make_circles(n_samples=300, noise=0.1, factor=0.3, random_state=0)
         st.session_state.spectral_data = X
         st.success("Circular data generated!")
@@ -341,7 +342,7 @@ def tsne_playground():
             X = df[numeric_cols].values
             st.info(f"Using uploaded data: {X.shape[0]} samples, {X.shape[1]} features")
     
-    if st.button("Generate Sample Data", key="tsne_data"):
+    if st.button("Generate Sample Data", key="tsne_data_btn"):
         X, _ = make_blobs(n_samples=300, centers=4, n_features=10, random_state=0)
         st.session_state.tsne_data = X
         st.success("10D sample data generated!")
