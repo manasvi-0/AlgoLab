@@ -15,15 +15,13 @@ import pandas as  pd
 
 import streamlit as st
 import pandas as pd
-from supervised_module import interactive_model_tuning
+from Supervised_algorithms.supervised_module import interactive_model_tuning
 
 from data_handler.upload_validate import upload_and_validate
 from sklearn.datasets import make_classification
 
 
 
-# Page configuration
-=======
 # ✅ Page configuration
 
 st.set_page_config(
@@ -103,9 +101,17 @@ with st.sidebar:
         class_separation = st.slider("Class Separation", 0.50, 2.00, 1.0)
 
         if st.button("Generate Dataset"):
+            # Calculate appropriate feature distribution to avoid constraint violation
+            n_informative = max(1, min(no_of_feature - 1, no_of_feature // 2))
+            n_redundant = max(0, min(no_of_feature - n_informative - 1, no_of_feature // 4))
+            n_repeated = max(0, no_of_feature - n_informative - n_redundant - 1)
+            
             X, y = make_classification(
                 n_samples=no_of_sample,
                 n_features=no_of_feature,
+                n_informative=n_informative,
+                n_redundant=n_redundant,
+                n_repeated=n_repeated,
                 n_classes=no_of_class,
                 n_clusters_per_class=1,
                 class_sep=class_separation,
