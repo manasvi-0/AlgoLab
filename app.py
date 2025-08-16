@@ -2,6 +2,7 @@
 # Importing required library
 import streamlit as st
 import pandas as  pd
+import numpy as np
 
 #import upload_validate() from data validation
 
@@ -20,6 +21,8 @@ from Supervised_algorithms.supervised_module import interactive_model_tuning
 from data_handler.upload_validate import upload_and_validate
 from sklearn.datasets import make_classification
 
+import cv2
+from cnn.kernels import visualiseImage
 
 
 # ✅ Page configuration
@@ -45,11 +48,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ✅ Tabs for navigation
-tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
+tab1, tab2, tab3, tab4 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning", "Convolutional Neural Networks"])
 
 
 with tab1:
-    st.write("Veiw Dataframe")
+    st.write("View Dataframe")
 
 #Supervised  Learning
 with tab2:
@@ -77,15 +80,27 @@ with tab3:
         st.session_state.uploaded_data = df
     unsupervised()
 
+with tab4:
+    st.write("Upload an image to get started")
+
+    # st.write(st.session_state)
+    if "uploaded_image" in st.session_state:
+        
+        print("Hi")
+        # Call your visualisation function
+        visualiseImage(st.session_state.uploaded_image)
+
+
+    
 # ✅ Global variable to store dataset
 df = None
-
+image_upload = None
 # ==============================
 # 📂 Sidebar - Upload or Generate Dataset
 # ==============================
 with st.sidebar:
     st.header("📂 Dataset Options")
-    options = ["Upload Dataset", "Generate Dataset"]
+    options = ["Upload Dataset", "Generate Dataset", "Upload Image"]
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
     # ✅ Upload dataset with validation
@@ -122,6 +137,23 @@ with st.sidebar:
             df["Target"] = y
             st.success("✅ Dataset Generated Successfully!")
             st.dataframe(df.head())
+
+    elif selected_option == "Upload Image":
+        uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
+        
+        if uploaded_file is not None:
+            try:
+                file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+                image_upload = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+                #visualiseImage(image_upload)
+                print("success")
+
+            except:
+                st.error("The image cannot be opened")
+
+            else:
+                st.session_state.uploaded_image = image_upload
+                # st.session_state["uploaded_image"] = image
 
 # ==============================
 # 🏠 Tab 1: Home Page
