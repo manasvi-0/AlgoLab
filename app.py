@@ -18,8 +18,8 @@ import pandas as pd
 from Supervised_algorithms.supervised_module import interactive_model_tuning
 
 from data_handler.upload_validate import upload_and_validate
-from sklearn.datasets import make_classification
-
+from data_handler.upload_validate import generate_dataset
+from data_handler.upload_validate import toy_dataset
 
 
 # ✅ Page configuration
@@ -48,26 +48,6 @@ st.markdown("""
 tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
 
 
-with tab1:
-    st.write("Veiw Dataframe")
-
-#Supervised  Learning
-with tab2:
-    st.write("Supervised  Learning")
-    options = ["KNN", "Decision Tree", "Logestic Regression","SVM"]
-    selected_option = st.selectbox("Choose an option:", options)
-
-    st.write("You have  selected:", selected_option)
-
-    # KNN Option selection
-    #if selected_option=="KNN":
-     #view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
-     #if view == "KNN Overview":
-        #from supervised_algo.KNN import knn_theory
-        #knn_theory.render()
-     #elif view == "KNN Playground":
-         #from supervised_algo.KNN import knn_visualization
-         #knn_visualization.render()
 
 #Unsupervised Learning
 with tab3:
@@ -85,62 +65,40 @@ df = None
 # ==============================
 with st.sidebar:
     st.header("📂 Dataset Options")
-    options = ["Upload Dataset", "Generate Dataset"]
+    options = ["Toy Dataset","Upload Dataset", "Generate Dataset"]
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
+    # ✅ Importing  Toy Dataset from Scikitlearn
+    if selected_option=="Toy Dataset":
+        toy_dataset()
+
     # ✅ Upload dataset with validation
-    if selected_option == "Upload Dataset":
+    elif selected_option == "Upload Dataset":
         df = upload_and_validate()
 
     # ✅ Generate synthetic dataset
     elif selected_option == "Generate Dataset":
-        no_of_sample = st.slider("No. of Samples", 10, 2000, 100)
-        no_of_feature = st.slider("No. of Features", 2, 20, 2)
-        noise_level = st.slider("Noise Level (%)", 0.0, 50.0, 5.0)
-        no_of_class = st.number_input("No. of Classes", min_value=2, max_value=10, value=2)
-        class_separation = st.slider("Class Separation", 0.50, 2.00, 1.0)
-
-        if st.button("Generate Dataset"):
-            # Calculate appropriate feature distribution to avoid constraint violation
-            n_informative = max(1, min(no_of_feature - 1, no_of_feature // 2))
-            n_redundant = max(0, min(no_of_feature - n_informative - 1, no_of_feature // 4))
-            n_repeated = max(0, no_of_feature - n_informative - n_redundant - 1)
-            
-            X, y = make_classification(
-                n_samples=no_of_sample,
-                n_features=no_of_feature,
-                n_informative=n_informative,
-                n_redundant=n_redundant,
-                n_repeated=n_repeated,
-                n_classes=no_of_class,
-                n_clusters_per_class=1,
-                class_sep=class_separation,
-                flip_y=noise_level/100,
-                random_state=42
-            )
-            df = pd.DataFrame(X, columns=[f"Feature_{i}" for i in range(X.shape[1])])
-            df["Target"] = y
-            st.success("✅ Dataset Generated Successfully!")
-            st.dataframe(df.head())
+        df = generate_dataset()
+        
 
 # ==============================
 # 🏠 Tab 1: Home Page
 # ==============================
 with tab1:
     st.write("Welcome to AlgoLab! 👋")
-    if df is not None:
+    if 'df' in st.session_state:
         st.subheader("📄 Current Dataset Preview")
-        st.dataframe(df.head())
+        st.dataframe(st.session_state.df.head())
     else:
-        st.info("Upload or generate a dataset to preview here.")
+        st.info("Load, upload or generate a dataset to preview here.")
 
 # ==============================
 # 🤖 Tab 2: Supervised Learning
 # ==============================
 with tab2:
     st.write("### Supervised Learning Playground")
-    if df is not None:
-        interactive_model_tuning(df)
+    if 'df' in st.session_state:
+        interactive_model_tuning(st.session_state.df)
     else:
         st.info("Upload or generate a dataset first to start tuning models.")
 
