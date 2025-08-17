@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import streamlit as st
 import random
+from cnn.model import alexnetVisualise, resnetVisualise, vgg16Visualise
+from PIL import Image
 
 def visualiseImage(image):
     print("received")
@@ -13,8 +15,32 @@ def visualiseImage(image):
 
         H,W,_ = np.shape(image)
 
+        # resized_img = cv2.resize(st.session_state.uploaded_image, (300, 300))
+
         st.image(cv2.cvtColor(st.session_state.uploaded_image, cv2.COLOR_BGR2RGB),
                     caption="Uploaded Image", use_container_width=True)
+        
+        if selected_option == "Visualise Layers of CNN":
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image = Image.fromarray(image)
+            model = st.radio("Choose Model", ["AlexNet", "ResNet50", "VGG16"])
+
+            if model == "AlexNet":
+                output_images = alexnetVisualise(image)
+
+
+            elif model == "ResNet50":
+                output_images = resnetVisualise(image)
+
+            else:
+                output_images = vgg16Visualise(image)
+
+            cols = st.columns(len(output_images))
+            for i, col in enumerate(cols):
+                with col:
+                    st.image(output_images[i], clamp = True, use_container_width=True)
+
+            
 
         if selected_option == "Edge Detection":
             kernel = st.radio("Choose Kernel", ["Prewitt", "Roberts", "Sobel", "Laplacian of Gaussian"])
