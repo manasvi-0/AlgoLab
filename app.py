@@ -2,6 +2,7 @@
 # Importing required library
 import streamlit as st
 import pandas as  pd
+import numpy as np
 
 #import upload_validate() from data validation
 
@@ -18,8 +19,14 @@ import pandas as pd
 from Supervised_algorithms.supervised_module import interactive_model_tuning
 
 from data_handler.upload_validate import upload_and_validate
+
 from data_handler.upload_validate import generate_dataset
 from data_handler.upload_validate import toy_dataset
+
+from sklearn.datasets import make_classification
+
+import cv2
+from cnn.kernels import visualiseImage
 
 
 # ✅ Page configuration
@@ -45,8 +52,30 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ✅ Tabs for navigation
-tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
+tab1, tab2, tab3, tab4 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning", "Convolutional Neural Networks"])
 
+
+
+with tab1:
+    st.write("View Dataframe")
+
+#Supervised  Learning
+with tab2:
+    st.write("Supervised  Learning")
+    options = ["KNN", "Decision Tree", "Logestic Regression","SVM"]
+    selected_option = st.selectbox("Choose an option:", options)
+
+    st.write("You have  selected:", selected_option)
+
+    # KNN Option selection
+    #if selected_option=="KNN":
+     #view = st.radio("Choose View", ["KNN Overview", "KNN Playground"])
+     #if view == "KNN Overview":
+        #from supervised_algo.KNN import knn_theory
+        #knn_theory.render()
+     #elif view == "KNN Playground":
+         #from supervised_algo.KNN import knn_visualization
+         #knn_visualization.render()
 
 
 #Unsupervised Learning
@@ -57,15 +86,31 @@ with tab3:
         st.session_state.uploaded_data = df
     unsupervised()
 
+with tab4:
+    st.write("Upload an image to get started")
+
+    # st.write(st.session_state)
+    if "uploaded_image" in st.session_state:
+        
+        print("Hi")
+        # Call your visualisation function
+        visualiseImage(st.session_state.uploaded_image)
+
+
+    
 # ✅ Global variable to store dataset
 df = None
-
+image_upload = None
 # ==============================
 # 📂 Sidebar - Upload or Generate Dataset
 # ==============================
 with st.sidebar:
     st.header("📂 Dataset Options")
+
     options = ["Toy Dataset","Upload Dataset", "Generate Dataset"]
+
+    options = ["Upload Dataset", "Generate Dataset", "Upload Image"]
+
     selected_option = st.radio("Choose your preferred option:", options, index=0)
 
     # ✅ Importing  Toy Dataset from Scikitlearn
@@ -80,6 +125,23 @@ with st.sidebar:
     elif selected_option == "Generate Dataset":
         df = generate_dataset()
         
+
+    elif selected_option == "Upload Image":
+        uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
+        
+        if uploaded_file is not None:
+            try:
+                file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+                image_upload = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+                #visualiseImage(image_upload)
+                print("success")
+
+            except:
+                st.error("The image cannot be opened")
+
+            else:
+                st.session_state.uploaded_image = image_upload
+                # st.session_state["uploaded_image"] = image
 
 # ==============================
 # 🏠 Tab 1: Home Page
