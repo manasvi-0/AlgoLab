@@ -58,7 +58,7 @@ def preprocess_data(df: pd.DataFrame):
     pd.DataFrame
         Preprocessed dataframe
     """
-    df = df.copy()
+    df = st.session_state.df.copy()
 
     # Handle nulls
     for col in df.columns:
