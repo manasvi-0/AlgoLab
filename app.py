@@ -150,6 +150,27 @@ with tab2:
 with tab3:
     st.write("Unsupervised module is under development.")
 
+
+# Sidebar theme toggle
+theme = st.sidebar.radio("Theme", ["Light", "Dark"])
+
+if theme == "Dark":
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #121212;
+            color: white;
+        }
+        .stButton button {
+            background-color: #333333;
+            color: white;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 # Footer
 st.markdown("""
 <style>
