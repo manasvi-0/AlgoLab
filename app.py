@@ -3,6 +3,8 @@
 import streamlit as st
 import pandas as  pd
 
+from pages import model_comparison
+
 #import upload_validate() from data validation
 
 # ==============================
@@ -45,7 +47,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ✅ Tabs for navigation
-tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
+# tab1, tab2, tab3 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning"])
+
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Home Page", 
+    "Supervised Learning", 
+    "Unsupervised Learning", 
+    "Model Comparison"  # ✅ new tab
+])
+
 
 
 with tab1:
@@ -149,6 +159,14 @@ with tab2:
 # ==============================
 with tab3:
     st.write("Unsupervised module is under development.")
+
+
+# ==============================
+# 📊 Tab 4: Model Comparison
+# ==============================
+with tab4:
+    model_comparison.show()
+   
 
 # Footer
 st.markdown("""
