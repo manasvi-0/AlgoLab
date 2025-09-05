@@ -4,6 +4,8 @@ import streamlit as st
 import pandas as  pd
 import numpy as np
 
+from pages import model_comparison
+
 #import upload_validate() from data validation
 
 # ==============================
@@ -53,9 +55,16 @@ st.markdown("""
 <b>— Jim Rohn</b>
 </div>
 """, unsafe_allow_html=True)
-
+ # ✅ Tabs for navigation
 # ✅ Tabs for navigation
-tab1, tab2, tab3, tab4 = st.tabs(["Home Page", "Supervised Learning", "Unsupervised Learning", "Convolutional Neural Networks"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "Home Page", 
+    "Supervised Learning", 
+    "Unsupervised Learning", 
+    "Model Comparison",               # from your branch
+    "Convolutional Neural Networks"   # from main
+])
+
 
 
 
@@ -192,6 +201,14 @@ if theme == "Dark":
         """,
         unsafe_allow_html=True
     )
+
+
+# ==============================
+# 📊 Tab 4: Model Comparison
+# ==============================
+with tab4:
+    model_comparison.show()
+   
 
 # Footer
 st.markdown("""
