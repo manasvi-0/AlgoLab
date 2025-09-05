@@ -28,6 +28,9 @@ from sklearn.datasets import make_classification
 import cv2
 from cnn.kernels import visualiseImage
 
+# Import unsupervised learning module
+from unsupervised_algorithms.unsupervised_module import unsupervised
+
 
 # ✅ Page configuration
 
@@ -80,10 +83,13 @@ with tab2:
 
 #Unsupervised Learning
 with tab3:
-    from unsupervised_algorithms.unsupervised_module import unsupervised
-    # Store uploaded data in session state for unsupervised algorithms
-    if 'df' in locals() and df is not None:
-        st.session_state.uploaded_data = df
+    st.header("🧭 Unsupervised Learning")
+    
+    # Ensure uploaded data is available in session state
+    if 'df' in st.session_state and st.session_state.df is not None:
+        st.session_state.uploaded_data = st.session_state.df
+    
+    # Run the unsupervised module
     unsupervised()
 
 with tab4:
@@ -164,11 +170,7 @@ with tab2:
     else:
         st.info("Upload or generate a dataset first to start tuning models.")
 
-# ==============================
-# 🚧 Tab 3: Unsupervised Learning
-# ==============================
-with tab3:
-    st.write("Unsupervised module is under development.")
+# This section is now handled in the tab3 block above
 
 
 # Sidebar theme toggle
