@@ -26,7 +26,7 @@ def toy_dataset():
         df = pd.DataFrame(combined, columns=columns)
         st.success("✅Data imported successfully!")
         st.markdown(f"**Shape:** {df.shape[0]} rows × {df.shape[1]} columns")
-        st.balloons()
+
         st.session_state.df=df
     else:
         st.info("Select a Dataset")
@@ -54,7 +54,7 @@ def upload_and_validate():
             #  Info block after successful validation
             st.success("✅File uploaded and validated successfully!")
             st.markdown(f"**Shape:** {df.shape[0]} rows × {df.shape[1]} columns")
-            st.balloons()
+
 
             #  Warning for missing values
             if df.isnull().values.any():
@@ -99,5 +99,5 @@ def generate_dataset():
             df = pd.DataFrame(X, columns=[f"Feature_{i}" for i in range(X.shape[1])])
             df["Target"] = y
             st.success("✅ Dataset Generated Successfully!")
-            st.balloons()
+  
             st.session_state.df=df
