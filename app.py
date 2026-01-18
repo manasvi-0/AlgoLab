@@ -10,7 +10,7 @@ import streamlit as st
 import model_comparison
 from data_handler.upload_validate import upload_and_validate, generate_dataset, toy_dataset
 from unsupervised_algorithms.unsupervised_module import unsupervised
-from Supervised_algorithms.supervised_module.py import supervised 
+from Supervised_algorithms.supervised_module import supervised 
 # ==============================
 # Page configuration
 # ==============================
